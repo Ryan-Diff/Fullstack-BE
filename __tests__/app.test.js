@@ -2,9 +2,32 @@ const fs = require('fs');
 const pool = require('../lib/utils/pool');
 const request = require('supertest');
 const app = require('../lib/app');
+const Plant = require('../lib/models/Plant-Model');
 
-describe('Fullstack-FE routes', () => {
+describe('Plant routes', () => {
   beforeEach(() => {
-    return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'))
+    return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
+  });
+
+  it('Creates a new Plant via POST', () => {
+    return request(app)
+      .post('/api/v1/plants')
+      .send({
+        name: 'Ficus Lyrata',
+        commonName: 'Fiddle Leaf Fig',
+        description: 'Broad fiddle shaped leaves',
+        waterNeeds: 'Once a week or when soil is dry about an inch down',
+        imageUrl: 'http://placekitten.com/200/300'
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          id: expect.any(String),
+          name: 'Ficus Lyrata',
+          commonName: 'Fiddle Leaf Fig',
+          description: 'Broad fiddle shaped leaves',
+          waterNeeds: 'Once a week or when soil is dry about an inch down',
+          imageUrl: 'http://placekitten.com/200/300'
+        });
+      });
   });
 });
