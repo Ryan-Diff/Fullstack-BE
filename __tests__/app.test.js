@@ -50,4 +50,29 @@ describe('Plant routes', () => {
         });
       });
   });
+
+  it('gets one plant by id via GET', async () => {
+    await Promise.all([
+      {
+        name: 'Ficus Lyrata',
+        commonName: 'Fiddle Leaf Fig',
+        description: 'Broad fiddle shaped leaves',
+        waterNeeds: 'Once a week or when soil is dry about an inch down',
+        imageUrl: 'http://placekitten.com/200/300'
+      }
+    ].map(plant => Plant.insert(plant)));
+
+    return request(app)
+      .get('/api/v1/plants/1')
+      .then(res => {
+        expect(res.body).toEqual({
+          id: expect.any(String),
+          name: 'Ficus Lyrata',
+          commonName: 'Fiddle Leaf Fig',
+          description: 'Broad fiddle shaped leaves',
+          waterNeeds: 'Once a week or when soil is dry about an inch down',
+          imageUrl: 'http://placekitten.com/200/300'
+        });
+      });
+  });
 });
